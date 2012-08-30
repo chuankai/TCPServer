@@ -15,10 +15,10 @@
 {
     CFSocketRef sock;
     NSInputStream *inputStream;
-    void (^eventBlock)(NSStream *);
+    void (^eventBlock)(NSInputStream *);
 }
 
-- (void)startWithPort:(NSUInteger)port UsingBlock:(void (^)(NSStream *))block
+- (void)startWithPort:(NSUInteger)port UsingBlock:(void (^)(NSInputStream *))block
 {
     NSLog(@"startWithPort:%u", port);
     CFSocketContext context = {0, (__bridge void *)(self), NULL, NULL, NULL};
@@ -74,7 +74,7 @@ void onConnect(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef addre
     switch (streamEvent) {
         case NSStreamEventHasBytesAvailable:
         {
-            self->eventBlock(theStream);
+            self->eventBlock((NSInputStream *)theStream);
             break;
         }
             
