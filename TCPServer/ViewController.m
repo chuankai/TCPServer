@@ -14,6 +14,9 @@
 @end
 
 @implementation ViewController
+{
+    TCPServer *server;
+}
 
 - (void)viewDidLoad
 {
@@ -30,6 +33,24 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (void)start
+{
+    server = [[TCPServer alloc] init];
+    [server startWithPort:33352 UsingBlock:^(NSInputStream *stream){
+        uint8_t buf[1];
+        NSInteger len;
+        len = [(NSInputStream *)stream read:buf maxLength:1];
+        if (len) {
+            NSLog(@"Input: %c", buf[0]);
+        }
+    }];
+}
+
+- (void)stop
+{
+    [server stop];
 }
 
 @end

@@ -8,13 +8,8 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "TCPServer.h"
-#import <Foundation/Foundation.h>
 
 @implementation AppDelegate
-{
-    TCPServer *server;
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -23,7 +18,8 @@
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
-    [self startTCPServer];
+    [self.viewController start];
+    
     return YES;
 }
 
@@ -37,13 +33,13 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    [self stopTCPServer];
+    [self.viewController stop];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [self startTCPServer];
+    [self.viewController start];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -54,25 +50,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    [self stopTCPServer];
-}
-
-- (void)startTCPServer
-{
-    server = [[TCPServer alloc] init];
-    [server startWithPort:33350 UsingBlock:^(NSInputStream *stream){
-        uint8_t buf[1];
-        NSInteger len;
-        len = [(NSInputStream *)stream read:buf maxLength:1];
-        if (len) {
-            NSLog(@"Input: %c", buf[0]);
-        }
-    }];
-}
-
-- (void)stopTCPServer
-{
-    [server stop];
+    [self.viewController stop];
 }
 
 @end

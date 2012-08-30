@@ -27,7 +27,6 @@
         NSLog(@"Socket creating failed");
         return;
     }
-    NSLog(@"socket flag: %lx", CFSocketGetSocketFlags(sock));
     
     struct sockaddr_in sin = {0};
     sin.sin_len = sizeof(sin);
