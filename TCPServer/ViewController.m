@@ -20,8 +20,10 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"viewDidLoad");
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    server = [[TCPServer alloc] init];
 }
 
 - (void)viewDidUnload
@@ -37,7 +39,6 @@
 
 - (void)start
 {
-    server = [[TCPServer alloc] init];
     [server startWithPort:33352 UsingBlock:^(NSInputStream *stream){
         uint8_t buf[1];
         NSInteger len;
