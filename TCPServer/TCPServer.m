@@ -15,6 +15,7 @@
 {
     CFSocketRef sock;
     NSInputStream *inputStream;
+    void (^eventBlock)(NSStream *);
 }
 
 - (void)startWithPort:(NSUInteger)port UsingBlock:(void (^)(NSStream *))block
@@ -26,6 +27,7 @@
         NSLog(@"Socket creating failed");
         return;
     }
+    NSLog(@"socket flag: %lx", CFSocketGetSocketFlags(sock));
     
     struct sockaddr_in sin = {0};
     sin.sin_len = sizeof(sin);
@@ -40,10 +42,12 @@
     }
     CFRunLoopSourceRef socketsource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, sock, 0);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), socketsource, kCFRunLoopDefaultMode);
+    eventBlock = block;
 }
 - (void)stop
 {
     CFSocketInvalidate(sock);
+    NSLog(@"socket invalidated");
 }
 
 void onConnect(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef address, const void *data, void *info)
@@ -71,12 +75,7 @@ void onConnect(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef addre
     switch (streamEvent) {
         case NSStreamEventHasBytesAvailable:
         {
-            uint8_t buf[1];
-            NSInteger len;
-            len = [(NSInputStream *)theStream read:buf maxLength:1];
-            if (len) {
-                NSLog(@"Input: %c", buf[0]);
-            }
+            self->eventBlock(theStream);
             break;
         }
             

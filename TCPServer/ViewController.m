@@ -10,9 +10,6 @@
 #import "TCPServer.h"
 
 @interface ViewController ()
-{
-    TCPServer *server;
-}
 
 @end
 
@@ -22,8 +19,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    server = [[TCPServer alloc] init];
-    [server startWithPort:33339 UsingBlock:nil];
 }
 
 - (void)viewDidUnload

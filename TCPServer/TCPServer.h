@@ -10,7 +10,7 @@
 
 @interface TCPServer : NSObject <NSStreamDelegate>
 
-- (void)startWithPort:(NSUInteger) port UsingBlock:(void (^)(NSStream *stream))block;
+- (void)startWithPort:(NSUInteger) port UsingBlock:(void (^)(NSInputStream *stream))block;
 - (void)stop;
 
 @end
